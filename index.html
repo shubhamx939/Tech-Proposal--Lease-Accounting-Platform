@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tech Proposal — Lease Accounting Platform | Shubham to Mukesh</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1a1a;
+    --ink-2: #444;
+    --ink-3: #777;
+    --ink-4: #aaa;
+    --surface: #fafaf8;
+    --surface-2: #f2f0eb;
+    --surface-3: #e8e4dc;
+    --border: #ddd9d0;
+    --lean-accent: #2d6a4f;
+    --lean-light: #d8f3dc;
+    --lean-mid: #52b788;
+    --bal-accent: #1d4e89;
+    --bal-light: #dbeafe;
+    --bal-mid: #3b82f6;
+    --prem-accent: #7b2d8b;
+    --prem-light: #f3e8ff;
+    --prem-mid: #a855f7;
+    --warning: #92400e;
+    --warning-bg: #fef3c7;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+    padding: 0;
+  }
+
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 64px 48px 96px;
+  }
+
+  /* ── Header ── */
+  .header {
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: 32px;
+    margin-bottom: 48px;
+  }
+
+  .header-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 28px;
+    font-size: 12px;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .from-to {
+    display: flex;
+    gap: 48px;
+  }
+
+  .from-to div { display: flex; flex-direction: column; gap: 2px; }
+  .from-to strong { color: var(--ink); font-size: 13px; text-transform: none; letter-spacing: 0; font-weight: 600; }
+
+  .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 42px;
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .header h1 em {
+    font-style: italic;
+    color: var(--ink-2);
+  }
+
+  .header-sub {
+    font-size: 16px;
+    color: var(--ink-2);
+    font-weight: 300;
+  }
+
+  /* ── Section titles ── */
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--ink-4);
+    margin-bottom: 12px;
+  }
+
+  h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: var(--ink);
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+
+  h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  p { margin-bottom: 14px; color: var(--ink-2); }
+  p:last-child { margin-bottom: 0; }
+
+  /* ── Context block ── */
+  .context-block {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-bottom: 48px;
+  }
+
+  .context-block .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 20px;
+  }
+
+  .context-item { border-left: 2px solid var(--border); padding-left: 14px; }
+  .context-item .label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-4); font-weight: 500; margin-bottom: 4px; }
+  .context-item .value { font-size: 14px; color: var(--ink); font-weight: 500; line-height: 1.5; }
+
+  /* ── Understanding block ── */
+  .understanding {
+    margin-bottom: 56px;
+  }
+
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 20px 0 24px;
+  }
+
+  .step {
+    background: var(--surface);
+    padding: 18px 20px;
+  }
+
+  .step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-4);
+    margin-bottom: 6px;
+  }
+
+  .step-title { font-weight: 600; font-size: 13px; color: var(--ink); margin-bottom: 4px; }
+  .step-desc { font-size: 12px; color: var(--ink-3); line-height: 1.5; }
+
+  .pain-points {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .pain {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 12px 14px;
+    background: var(--warning-bg);
+    border-radius: 8px;
+    border: 1px solid #fde68a;
+  }
+
+  .pain-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    background: var(--warning);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pain-icon::after {
+    content: '!';
+    font-size: 9px;
+    color: white;
+    font-weight: 700;
+  }
+
+  .pain p { font-size: 12.5px; color: var(--warning); margin: 0; font-weight: 400; line-height: 1.5; }
+
+  /* ── Plan cards ── */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 56px 0;
+  }
+
+  .plan {
+    margin-bottom: 64px;
+  }
+
+  .plan-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .plan-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+  }
+
+  .badge-lean { background: var(--lean-light); color: var(--lean-accent); }
+  .badge-bal  { background: var(--bal-light);  color: var(--bal-accent);  }
+  .badge-prem { background: var(--prem-light); color: var(--prem-accent); }
+
+  .plan-header h2 { margin-bottom: 4px; }
+
+  .plan-tagline { font-size: 14px; color: var(--ink-3); font-weight: 300; }
+
+  .plan-price {
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .plan-price .amount {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    color: var(--ink);
+    line-height: 1;
+  }
+
+  .plan-price .label {
+    font-size: 11px;
+    color: var(--ink-4);
+    letter-spacing: 0.06em;
+    margin-top: 4px;
+  }
+
+  .plan-price .timeline {
+    font-size: 12px;
+    color: var(--ink-3);
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .box {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 22px;
+  }
+
+  .box h3 { margin-bottom: 12px; }
+
+  .feature-list { list-style: none; }
+  .feature-list li {
+    font-size: 13.5px;
+    color: var(--ink-2);
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.5;
+  }
+  .feature-list li:last-child { border-bottom: none; }
+  .feature-list li::before {
+    content: '→';
+    font-size: 11px;
+    color: var(--ink-4);
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  .tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+  }
+
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 3px 9px;
+    background: var(--surface-3);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--ink-2);
+  }
+
+  .lean-accent-bar  { border-left: 3px solid var(--lean-mid); }
+  .bal-accent-bar   { border-left: 3px solid var(--bal-mid); }
+  .prem-accent-bar  { border-left: 3px solid var(--prem-mid); }
+
+  .full-box {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 22px;
+    margin-bottom: 16px;
+  }
+
+  /* Screens/feature rows for Balanced & Premium */
+  .screen-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .screen-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    background: var(--surface);
+  }
+
+  .screen-card .sc-icon {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+
+  .sc-green  { background: var(--lean-light); }
+  .sc-blue   { background: var(--bal-light); }
+  .sc-purple { background: var(--prem-light); }
+
+  .screen-card h3 { font-size: 13px; margin-bottom: 4px; }
+  .screen-card p  { font-size: 12px; color: var(--ink-3); line-height: 1.45; margin: 0; }
+
+  /* Recommendation box */
+  .rec-block {
+    margin-top: 56px;
+    background: var(--ink);
+    color: white;
+    border-radius: 12px;
+    padding: 36px 40px;
+  }
+
+  .rec-block .section-label { color: rgba(255,255,255,0.45); }
+  .rec-block h2 { color: white; font-family: 'DM Serif Display', serif; margin-bottom: 12px; }
+  .rec-block p  { color: rgba(255,255,255,0.75); margin-bottom: 12px; }
+
+  .rec-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .rec-opt {
+    padding: 16px 18px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+
+  .rec-opt .opt-plan { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; margin-bottom: 6px; }
+  .rec-opt .opt-note { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.5; }
+
+  .rec-opt.best { border-color: rgba(168,85,247,0.6); background: rgba(168,85,247,0.1); }
+  .rec-opt.best .opt-plan { color: #d8b4fe; }
+  .rec-opt.good .opt-plan { color: #93c5fd; }
+  .rec-opt.ok   .opt-plan { color: #86efac; }
+
+  /* Footer */
+  .footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--ink-4);
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .page { padding: 32px 24px 64px; }
+    .context-block .grid { grid-template-columns: 1fr; }
+    .two-col { grid-template-columns: 1fr; }
+    .screen-grid { grid-template-columns: 1fr 1fr; }
+    .rec-options { grid-template-columns: 1fr; }
+    .process-steps { grid-template-columns: 1fr; }
+    .pain-points { grid-template-columns: 1fr; }
+    .from-to { flex-direction: column; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── HEADER ── -->
+  <div class="header">
+    <div class="header-meta">
+      <div class="from-to">
+        <div>
+          <span>From</span>
+          <strong>Shubham — Independent Software Developer</strong>
+        </div>
+        <div>
+          <span>To</span>
+          <strong>Mukesh Seervi — Chartered Accountant, Bengaluru</strong>
+        </div>
+      </div>
+      <div>March 2026</div>
+    </div>
+    <h1>Tech Solution Proposal<br>for <em>Lease Accounting Automation</em></h1>
+    <p class="header-sub">Three plans — from a focused single-tool to a full CA practice platform. Pick what fits your current appetite.</p>
+  </div>
+
+  <!-- ── CONTEXT ── -->
+  <div class="understanding">
+    <div class="section-label">What I understood about your work</div>
+    <h2>The Activity at the Center of This</h2>
+    <p>Before proposing anything, I want to show you I've understood exactly what you do — because the whole point of a tech solution is that it should replace or accelerate the manual Excel grind, not add another layer of complexity on top of it.</p>
+
+    <div class="context-block">
+      <h3>The Core Task: Ind AS 116 Lease Accounting for CultFit-type clients</h3>
+      <p style="font-size:13.5px; color: var(--ink-3); margin-top: 6px;">Every time your client signs a lease — a gym, office, retail space — you build and maintain a working that computes the following under Ind AS 116:</p>
+
+      <div class="process-steps">
+        <div class="step">
+          <div class="step-num">01 / Input</div>
+          <div class="step-title">Lease master data</div>
+          <div class="step-desc">Location, lessor, city, lease start & end, rent, CAM, deposit, escalation %, lock-in, fit-out period, IBR</div>
+        </div>
+        <div class="step">
+          <div class="step-num">02 / Engine</div>
+          <div class="step-title">Amortisation schedule</div>
+          <div class="step-desc">Month-by-month PV calculation. Interest = (Opening LL − Payout) × IBR/12. Closing LL rolls forward per period</div>
+        </div>
+        <div class="step">
+          <div class="step-num">03 / Output</div>
+          <div class="step-title">Annual P&amp;L + BS entries</div>
+          <div class="step-desc">Depreciation, interest, lease liability (current/non-current), ROU asset WDV — per lease, per FY, per entity</div>
+        </div>
+        <div class="step">
+          <div class="step-num">04 / Events</div>
+          <div class="step-title">Modifications &amp; exits</div>
+          <div class="step-desc">Remeasure LL on modification. ROU reversal + LL write-off on termination/shutdown. Rent concession tracking</div>
+        </div>
+        <div class="step">
+          <div class="step-num">05 / Rollup</div>
+          <div class="step-title">Lead sheet consolidation</div>
+          <div class="step-desc">200+ leases aggregated. Month-wise rent schedule. FY-wise depreciation, interest, payout by zone and entity</div>
+        </div>
+        <div class="step">
+          <div class="step-num">06 / Report</div>
+          <div class="step-title">Final audit deliverable</div>
+          <div class="step-desc">Consolidated ROU + LL roll-forward, maturity profile (&lt;1yr / 1–5yr / &gt;5yr), entity-wise split, variance checks</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 8px;"><h3>Key pain points in the current Excel approach</h3></div>
+      <div class="pain-points">
+        <div class="pain"><div class="pain-icon"></div><p>One new lease = manually create a new sheet, copy formulas, update Lead Sheet row. Prone to formula breaks.</p></div>
+        <div class="pain"><div class="pain-icon"></div><p>200+ sheets in one workbook — the file is massive, slow, and crashes risk corrupting months of work.</p></div>
+        <div class="pain"><div class="pain-icon"></div><p>A termination or modification requires manual intervention across the individual sheet and the Lead Sheet simultaneously.</p></div>
+        <div class="pain"><div class="pain-icon"></div><p>The report (maturity profile, roll-forward, entity split) has to be manually assembled from the Summary sheet every quarter.</p></div>
+        <div class="pain"><div class="pain-icon"></div><p>No audit trail — if a number changes, you cannot tell who changed it or why. No version history beyond file copies.</p></div>
+        <div class="pain"><div class="pain-icon"></div><p>Client data is sitting in an unprotected Excel file on a local machine. No access control, no backup discipline.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════ -->
+  <!--           PLAN 1 — LEAN             -->
+  <!-- ════════════════════════════════════ -->
+  <div class="section-label">The Three Plans</div>
+
+  <div class="plan">
+    <div class="plan-header">
+      <div>
+        <div class="plan-badge badge-lean">Plan 01 — Lean</div>
+        <h2>The Single-Purpose Tool</h2>
+        <p class="plan-tagline">Replace the Excel workbook with a fast, reliable web dashboard. Nothing more, nothing less.</p>
+      </div>
+      <div class="plan-price">
+        <div class="amount">₹35k – 50k</div>
+        <div class="label">One-time development</div>
+        <div class="timeline">6 – 8 weeks delivery</div>
+      </div>
+    </div>
+
+    <p>This is a tight, focused build. The philosophy is: take exactly what you do in that 250-sheet Excel workbook and rebuild it as a proper web application — with a database, a clean UI for data entry, and auto-generated outputs. No bells, no whistles. Just the core job, done reliably.</p>
+
+    <div class="two-col">
+      <div class="box lean-accent-bar">
+        <h3>What gets built</h3>
+        <ul class="feature-list">
+          <li>Secure login with client-level data isolation</li>
+          <li>Lease master data entry form (all fields: location, lessor, dates, rent, CAM, deposit, escalation, IBR)</li>
+          <li>Auto-computed amortisation schedule (PV calculation engine same as your Excel logic)</li>
+          <li>FY-wise P&amp;L and Balance Sheet output: depreciation, interest, LL (current + non-current), ROU WDV</li>
+          <li>Termination and modification workflows — date-triggered remeasurement</li>
+          <li>Rent concession recording per period</li>
+          <li>Consolidated Lead Sheet view — all leases in one table, filterable by city / zone / status</li>
+          <li>Auto-generated maturity profile (&lt;1yr, 1–5yr, &gt;5yr)</li>
+          <li>Export to Excel — structured output ready to paste into audit report</li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="box lean-accent-bar" style="margin-bottom: 16px;">
+          <h3>What is NOT in this plan</h3>
+          <ul class="feature-list">
+            <li>No multi-client login panel (single client only)</li>
+            <li>No in-app report generation / PDF output</li>
+            <li>No document upload (lease agreements)</li>
+            <li>No billing or payment integration</li>
+            <li>No mobile app</li>
+          </ul>
+        </div>
+        <div class="box lean-accent-bar">
+          <h3>Technology stack</h3>
+          <div class="tech-tags">
+            <span class="tag">React</span>
+            <span class="tag">Node.js</span>
+            <span class="tag">PostgreSQL</span>
+            <span class="tag">Render / Railway</span>
+            <span class="tag">JWT Auth</span>
+            <span class="tag">ExcelJS</span>
+          </div>
+          <p style="font-size: 12px; color: var(--ink-3); margin-top: 12px; margin-bottom: 0;">Hosted on cloud. No installation needed on your machine. Accessible from browser.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="full-box lean-accent-bar">
+      <h3>What changes for you day-to-day</h3>
+      <p style="font-size: 13.5px; margin-bottom: 0;">Adding a new lease takes 3 minutes in a form instead of 30 minutes of Excel sheet duplication. Terminations are handled by clicking a date — the app remeasures everything automatically. Your quarterly output (depreciation + LL roll-forward + maturity profile) is available at one click, not a 2-hour assembly job. The file-crash risk disappears. Your data is in a proper database with daily backups.</p>
+    </div>
+
+    <div class="full-box" style="background: var(--lean-light); border-color: #a7f3d0;">
+      <h3 style="color: var(--lean-accent);">Honest note from my side</h3>
+      <p style="font-size: 13.5px; color: #065f46; margin-bottom: 0;">At ₹35k–50k this is priced lean on purpose. It will serve you well if you have one primary client running this activity. If your practice grows to 3–5 clients running the same activity, you will outgrow this within a year and need the Balanced plan anyway. So treat this as a "start now, validate the idea" option — not a long-term architecture.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ════════════════════════════════════ -->
+  <!--         PLAN 2 — BALANCED           -->
+  <!-- ════════════════════════════════════ -->
+  <div class="plan">
+    <div class="plan-header">
+      <div>
+        <div class="plan-badge badge-bal">Plan 02 — Balanced</div>
+        <h2>The CA Practice Platform<br><em style="font-size:22px; color: var(--ink-3);">— Lease module first</em></h2>
+        <p class="plan-tagline">A proper multi-client SaaS foundation. The lease engine is Microservice #1. Others can be added later.</p>
+      </div>
+      <div class="plan-price">
+        <div class="amount">₹3 – 5 lakh</div>
+        <div class="label">One-time development</div>
+        <div class="timeline">14 – 20 weeks delivery</div>
+      </div>
+    </div>
+
+    <p>This is the right long-term bet. Instead of building a tool for one activity, we build a platform that is architectured to support multiple activities (modules) — but we only build the lease accounting module right now. The key investment here is in the infrastructure: multi-client workspace, role-based access, a proper audit trail, and a clean internal architecture that makes adding Module #2 or #3 cheap later.</p>
+
+    <div class="screen-grid">
+      <div class="screen-card">
+        <div class="sc-icon sc-blue">🏢</div>
+        <h3>Client workspace</h3>
+        <p>Each client (e.g. CultFit) gets their own isolated workspace with their own lease portfolio, users, and history.</p>
+      </div>
+      <div class="screen-card">
+        <div class="sc-icon sc-blue">👥</div>
+        <h3>Team + roles</h3>
+        <p>You (CA) are the admin. You can invite junior team members as data entry operators with restricted access.</p>
+      </div>
+      <div class="screen-card">
+        <div class="sc-icon sc-blue">📋</div>
+        <h3>Lease module</h3>
+        <p>Full lease accounting engine from Lean plan — but now multi-client, multi-entity, multi-FY out of the box.</p>
+      </div>
+      <div class="screen-card">
+        <div class="sc-icon sc-blue">📊</div>
+        <h3>In-app reports</h3>
+        <p>Formatted audit-ready reports generated as PDFs from within the app. No manual assembly needed.</p>
+      </div>
+      <div class="screen-card">
+        <div class="sc-icon sc-blue">📁</div>
+        <h3>Document vault</h3>
+        <p>Upload and link lease agreements, amendment letters, termination notices to each lease record.</p>
+      </div>
+      <div class="screen-card">
+        <div class="sc-icon sc-blue">🔔</div>
+        <h3>Lease alerts</h3>
+        <p>Auto-reminders for lease expiry, lock-in expiry, renewal decisions — 90/60/30 days before key dates.</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="box bal-accent-bar">
+        <h3>Platform-level features</h3>
+        <ul class="feature-list">
+          <li>Multi-client dashboard — see all your clients in one place</li>
+          <li>Complete activity log / audit trail — every change recorded with timestamp and user</li>
+          <li>Comments and notes on each lease record</li>
+          <li>Bulk import via CSV / Excel for initial data migration</li>
+          <li>Quarter-end and year-end lock — freeze entries for a period</li>
+          <li>Excel + PDF export for all reports</li>
+          <li>Email notifications for key events and deadline reminders</li>
+          <li>Responsive design — accessible on tablet and phone</li>
+        </ul>
+      </div>
+      <div class="box bal-accent-bar">
+        <h3>Architecture design</h3>
+        <ul class="feature-list">
+          <li>Modular microservice design — "Lease Accounting" is Module 1</li>
+          <li>Separate service containers per module for independent deployment</li>
+          <li>Shared auth, user, and client management layer</li>
+          <li>API-first backend — any future module just plugs in</li>
+          <li>Role-based access control framework built-in from Day 1</li>
+        </ul>
+        <div class="tech-tags" style="margin-top: 16px;">
+          <span class="tag">React + TypeScript</span>
+          <span class="tag">Node.js</span>
+          <span class="tag">PostgreSQL</span>
+          <span class="tag">Redis</span>
+          <span class="tag">AWS / GCP</span>
+          <span class="tag">Puppeteer PDF</span>
+          <span class="tag">S3 (docs)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="full-box bal-accent-bar">
+      <h3>What adding a new client costs (for you) after this is built</h3>
+      <p style="font-size: 13.5px; margin-bottom: 0;">You click "New Client" → fill in their details → create their workspace. That is it. The platform is multi-tenant from Day 1. If you have 5 clients running Ind AS 116 workings today, all 5 can be onboarded. You can even consider charging each client a monthly SaaS fee instead of billing them per hour — this platform can become a revenue line, not just a cost-saving tool.</p>
+    </div>
+
+    <div class="full-box" style="background: var(--bal-light); border-color: #bfdbfe;">
+      <h3 style="color: var(--bal-accent);">Why this is the sweet spot</h3>
+      <p style="font-size: 13.5px; color: #1e40af; margin-bottom: 0;">₹3–5 lakh is a real investment but it builds something that has genuine standalone value. You are not just buying a feature — you are buying an architecture that lets you compete with big CA firm software at a fraction of the cost. This is the plan I would personally recommend if you are serious about scaling your practice beyond 2–3 clients.</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ════════════════════════════════════ -->
+  <!--          PLAN 3 — PREMIUM           -->
+  <!-- ════════════════════════════════════ -->
+  <div class="plan">
+    <div class="plan-header">
+      <div>
+        <div class="plan-badge badge-prem">Plan 03 — Premium</div>
+        <h2>The Full CA Practice OS</h2>
+        <p class="plan-tagline">Everything a CA practice does manually — systematised, automated, and client-facing.</p>
+      </div>
+      <div class="plan-price">
+        <div class="amount">₹12 – 15 lakh</div>
+        <div class="label">One-time development</div>
+        <div class="timeline">10 – 14 months delivery</div>
+      </div>
+    </div>
+
+    <p>This is a full-stack CA practice operating system. The lease accounting module (from Balanced) is Module 1. The investment goes into building 6–8 more modules that cover the other repeatable, document-heavy, Excel-driven work that a CA practice handles. At this level, you are not just solving your own problem — you are building a product you can potentially sell to other CA firms or offer as a managed SaaS platform.</p>
+
+    <div class="full-box prem-accent-bar" style="margin-bottom: 24px;">
+      <h3>Module 1 (Lease Accounting) — carried from Balanced plan, fully built</h3>
+      <p style="font-size: 13.5px; margin-bottom: 0;">Everything from the Balanced plan is included and production-ready. The modules below are built on top of the same platform.</p>
+    </div>
+
+    <div class="screen-grid" style="grid-template-columns: repeat(4, 1fr);">
+      <div class="screen-card">
+        <div class="sc-icon sc-purple">📉</div>
+        <h3>Module 2: Fixed Asset Register</h3>
+        <p>Depreciation schedules (SLM/WDV), additions/deletions, block-wise reporting under Companies Act and Income Tax.</p>
+      </div>
+      <div class="screen-card">
+        <div class="sc-icon sc-purple">📝</div>
+        <h3>Module 3: Statutory Compliance Tracker</h3>
+        <p>GST returns, TDS, ROC filings — due dates, filing status, penalty tracker, auto-reminders per client.</p>
+      </div>
+      <div class="screen-card">
+        <div class="sc-icon sc-purple">🔍</div>
+        <h3>Module 4: Audit Checklist Manager</h3>
+        <p>Digital checklists for statutory audit. Document request management. Observation and findings tracker.</p>
+      </div>
+      <div class="screen-card">
+        <div class="sc-icon sc-purple">💹</div>
+        <h3>Module 5: Impairment Testing (Ind AS 36)</h3>
+        <p>DCF models, CGU mapping, recoverable amount calculation, impairment loss computation and reversal tracking.</p>
+      </div>
+      <div class="screen-card">
+        <div class="sc-icon sc-purple">🏦</div>
+        <h3>Module 6: ESOPs &amp; Share-Based (Ind AS 102)</h3>
+        <p>Grant tracking, vesting schedule, Black-Scholes valuation, P&amp;L charge computation per vesting tranche.</p>
+      </div>
+      <div class="screen-card">
+        <div class="sc-icon sc-purple">👔</div>
+        <h3>Module 7: Gratuity &amp; Leave Encashment (Ind AS 19)</h3>
+        <p>Actuarial computation integration. Defined benefit obligation, plan assets, re-measurement in OCI.</p>
+      </div>
+      <div class="screen-card">
+        <div class="sc-icon sc-purple">📬</div>
+        <h3>Module 8: Client Portal</h3>
+        <p>Clients can log in to view their reports, upload documents, approve workings, and track open queries — all with a branded interface.</p>
+      </div>
+      <div class="screen-card">
+        <div class="sc-icon sc-purple">🤖</div>
+        <h3>Module 9: AI Assistant</h3>
+        <p>Ask questions about any Ind AS standard, get computation explanations, auto-draft disclosure notes from working data.</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="box prem-accent-bar">
+        <h3>Practice management layer</h3>
+        <ul class="feature-list">
+          <li>Time tracking per client, per task — invoice-ready timesheets</li>
+          <li>Staff allocation and workload dashboard</li>
+          <li>Engagement letter management and e-signing</li>
+          <li>Billing and fee tracking per client</li>
+          <li>Knowledge base — your firm's internal SOPs and templates</li>
+        </ul>
+      </div>
+      <div class="box prem-accent-bar">
+        <h3>Platform &amp; commercial potential</h3>
+        <ul class="feature-list">
+          <li>White-label ready — sell to other CA firms under your brand</li>
+          <li>SaaS pricing model possible — per-client monthly subscription</li>
+          <li>ICAI Ind AS module coverage is a marketable differentiator</li>
+          <li>Mobile apps (iOS + Android) included</li>
+          <li>Dedicated support and SLA included for 12 months post-launch</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="full-box" style="background: var(--prem-light); border-color: #e9d5ff;">
+      <h3 style="color: var(--prem-accent);">The real pitch for Premium</h3>
+      <p style="font-size: 13.5px; color: #581c87; margin-bottom: 0;">Software like this — built specifically for Indian CA practice workflows, Ind AS-native, with the depth of calculation that you do in Excel — does not exist in the market at a price that small/mid-sized CA firms can afford. Tally, Zoho, and generic ERPs do not solve this. At ₹12–15 lakh, you are potentially building a product, not just a tool. If 20 CA firms pay ₹10,000/month to use this platform, you have recovered the investment in 6–7 months.</p>
+    </div>
+  </div>
+
+  <!-- ── RECOMMENDATION ── -->
+  <div class="rec-block">
+    <div class="section-label">My recommendation</div>
+    <h2>Here is what I would tell you honestly</h2>
+    <p>If you want to see value fast with minimal risk, start with Lean. You will have something live in 6–8 weeks, and your next quarterly closing will be dramatically less painful.</p>
+    <p>If you are thinking 2–3 years out and want this to grow with your practice — Balanced is the right call. The architecture investment now saves you from a costly rebuild later. This is what I would go with.</p>
+    <p>Premium makes sense only if you have already validated the idea with 2–3 paying clients, or if you want to make this a standalone product/business. Do not start here — earn it.</p>
+
+    <div class="rec-options">
+      <div class="rec-opt ok">
+        <div class="opt-plan">Lean — ₹35k–50k</div>
+        <div class="opt-note">Start now. Prove the value to yourself. Be ready any day — this is the lowest-risk bet.</div>
+      </div>
+      <div class="rec-opt good">
+        <div class="opt-plan">Balanced — ₹3–5 lakh</div>
+        <div class="opt-note">The smart long-term investment. Multi-client ready. Proper architecture. Recommended.</div>
+      </div>
+      <div class="rec-opt best">
+        <div class="opt-plan">Premium — ₹12–15 lakh ✦</div>
+        <div class="opt-note">Aspirational and powerful. Best outcome if you treat this as a product, not just a tool.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FOOTER ── -->
+  <div class="footer">
+    <div>Prepared by Shubham — Independent Software Developer</div>
+    <div>Confidential · March 2026</div>
+  </div>
+
+</div>
+</body>
+</html>
